@@ -35,17 +35,17 @@ def inject_css() -> None:
         """
         <style>
             :root {
-                --bg-start: #040712;
-                --bg-end: #0a1530;
-                --glass: rgba(13, 19, 39, 0.68);
-                --glass-strong: rgba(10, 15, 30, 0.84);
-                --stroke: rgba(255, 255, 255, 0.11);
-                --text: #f4f7ff;
-                --muted: #9caccc;
-                --accent-a: #4cc9f0;
-                --accent-b: #8b5cf6;
-                --accent-c: #38bdf8;
-                --shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+                --bg-start: #020202;
+                --bg-end: #08080a;
+                --glass: rgba(14, 14, 16, 0.78);
+                --glass-strong: rgba(20, 20, 23, 0.92);
+                --stroke: rgba(255, 255, 255, 0.1);
+                --text: #f5f5f5;
+                --muted: #a8a8b2;
+                --accent-a: #ffffff;
+                --accent-b: #c7c7ce;
+                --accent-c: #7b7b85;
+                --shadow: 0 24px 60px rgba(0, 0, 0, 0.48);
             }
 
             .stApp {
@@ -115,9 +115,9 @@ def inject_css() -> None:
                 margin: 0;
                 font-size: clamp(2.1rem, 4vw, 3.8rem);
                 font-weight: 800;
-                letter-spacing: 0.04em;
-                color: #f3f8ff;
-                text-shadow: 0 0 28px rgba(97, 218, 251, 0.14);
+                letter-spacing: 0.01em;
+                color: #ffffff;
+                text-shadow: 0 0 32px rgba(255, 255, 255, 0.12);
             }
 
             .hero p {
@@ -127,22 +127,34 @@ def inject_css() -> None:
             }
 
             .hero-accent {
-                width: 120px;
-                height: 4px;
+                width: 146px;
+                height: 5px;
                 margin: 0.9rem auto 0;
                 border-radius: 999px;
-                background: linear-gradient(90deg, rgba(76, 201, 240, 0.95), rgba(139, 92, 246, 0.95));
-                box-shadow: 0 0 18px rgba(97, 218, 251, 0.25);
+                background: linear-gradient(90deg, rgba(255, 255, 255, 0.98), rgba(198, 198, 204, 0.9));
+                box-shadow: 0 0 22px rgba(255, 255, 255, 0.18);
             }
 
             .glass-card {
-                background: var(--glass);
+                background:
+                    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 18%),
+                    var(--glass);
                 border: 1px solid var(--stroke);
                 box-shadow: var(--shadow);
                 border-radius: 24px;
                 backdrop-filter: blur(18px);
                 -webkit-backdrop-filter: blur(18px);
                 padding: 1.15rem 1.2rem;
+                position: relative;
+            }
+
+            .glass-card::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border-radius: inherit;
+                pointer-events: none;
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
             }
 
             .landing-card {
@@ -169,7 +181,7 @@ def inject_css() -> None:
                 height: 160px;
                 top: -48px;
                 right: -36px;
-                background: radial-gradient(circle, rgba(76, 201, 240, 0.95), transparent 68%);
+                background: radial-gradient(circle, rgba(255, 255, 255, 0.4), transparent 68%);
                 animation: driftGlow 8s ease-in-out infinite;
             }
 
@@ -178,7 +190,7 @@ def inject_css() -> None:
                 height: 180px;
                 bottom: -72px;
                 left: -54px;
-                background: radial-gradient(circle, rgba(139, 92, 246, 0.95), transparent 68%);
+                background: radial-gradient(circle, rgba(160, 160, 170, 0.28), transparent 68%);
                 animation: driftGlow 10s ease-in-out infinite reverse;
             }
 
@@ -200,13 +212,42 @@ def inject_css() -> None:
 
             .landing-hero-card {
                 max-width: 920px;
-                margin: 0 auto 1rem;
-                padding: 1.4rem 1.45rem 1.3rem;
+                margin: 1.35rem auto 1.35rem;
+                padding: 1.45rem 1.5rem 1.35rem;
+                overflow: hidden;
+            }
+
+            .landing-hero-card::before {
+                content: "";
+                position: absolute;
+                right: -8%;
+                bottom: -32%;
+                width: 320px;
+                height: 220px;
+                border-radius: 999px;
+                background:
+                    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.16), transparent 55%),
+                    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(130, 130, 138, 0.04));
+                filter: blur(10px);
+                transform: rotate(-18deg);
+                pointer-events: none;
+                opacity: 0.8;
+            }
+
+            .landing-hero-card::after {
+                content: "";
+                position: absolute;
+                left: 44%;
+                right: 4%;
+                bottom: 18px;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+                pointer-events: none;
             }
 
             .landing-kicker {
-                color: #edf5ff;
-                font-size: 1.22rem;
+                color: #fafafa;
+                font-size: 1.26rem;
                 font-weight: 700;
                 margin: 0 0 0.55rem;
             }
@@ -231,8 +272,8 @@ def inject_css() -> None:
                 align-items: flex-start;
                 padding: 0.85rem 0.9rem;
                 border-radius: 18px;
-                background: rgba(255, 255, 255, 0.04);
-                border: 1px solid rgba(255, 255, 255, 0.08);
+                background: rgba(255, 255, 255, 0.035);
+                border: 1px solid rgba(255, 255, 255, 0.09);
             }
 
             .landing-bullet-dot {
@@ -240,8 +281,8 @@ def inject_css() -> None:
                 height: 10px;
                 border-radius: 999px;
                 margin-top: 0.3rem;
-                background: linear-gradient(135deg, rgba(76, 201, 240, 1), rgba(139, 92, 246, 1));
-                box-shadow: 0 0 14px rgba(97, 218, 251, 0.3);
+                background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(170, 170, 176, 0.92));
+                box-shadow: 0 0 16px rgba(255, 255, 255, 0.18);
                 flex: 0 0 auto;
             }
 
@@ -259,7 +300,7 @@ def inject_css() -> None:
             .landing-detail-title {
                 font-size: 1.02rem;
                 font-weight: 700;
-                color: #eef6ff;
+                color: #fafafa;
                 margin: 0 0 0.8rem;
             }
 
@@ -267,7 +308,7 @@ def inject_css() -> None:
             .landing-tip-list {
                 margin: 0;
                 padding-left: 1.15rem;
-                color: #d8e6ff;
+                color: #dedee3;
             }
 
             .landing-number-list li,
@@ -285,13 +326,13 @@ def inject_css() -> None:
             .landing-mini-card {
                 padding: 0.9rem;
                 border-radius: 18px;
-                background: linear-gradient(180deg, rgba(17, 26, 52, 0.68), rgba(10, 17, 35, 0.58));
-                border: 1px solid rgba(255, 255, 255, 0.08);
+                background: linear-gradient(180deg, rgba(34, 34, 37, 0.92), rgba(16, 16, 18, 0.86));
+                border: 1px solid rgba(255, 255, 255, 0.1);
             }
 
             .landing-mini-card strong {
                 display: block;
-                color: #eef6ff;
+                color: #fafafa;
                 font-size: 0.9rem;
                 margin-bottom: 0.4rem;
             }
@@ -333,17 +374,17 @@ def inject_css() -> None:
                 align-items: center;
                 border-radius: 999px;
                 padding: 0.42rem 0.82rem;
-                background: rgba(255, 255, 255, 0.06);
-                border: 1px solid rgba(255, 255, 255, 0.1);
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.12);
                 color: #d9e7ff;
                 font-size: 0.8rem;
             }
 
             .chip-strong {
-                background: linear-gradient(90deg, rgba(76, 201, 240, 0.18), rgba(139, 92, 246, 0.22));
-                border-color: rgba(125, 171, 255, 0.28);
-                color: #eef6ff;
-                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 0 0 1px rgba(76, 201, 240, 0.08);
+                background: linear-gradient(90deg, rgba(255, 255, 255, 0.16), rgba(150, 150, 158, 0.14));
+                border-color: rgba(255, 255, 255, 0.18);
+                color: #ffffff;
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.05);
             }
 
             .question-text {
@@ -352,6 +393,76 @@ def inject_css() -> None:
                 font-weight: 600;
                 color: var(--text);
                 margin: 0;
+            }
+
+            .landing-preview-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 1.15rem;
+                max-width: 920px;
+                margin: 1.2rem auto 0.4rem;
+            }
+
+            .landing-preview-card {
+                padding: 1.08rem 1.08rem 1rem;
+                border-radius: 22px;
+                background:
+                    radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), transparent 34%),
+                    linear-gradient(180deg, rgba(34, 34, 37, 0.96), rgba(12, 12, 14, 0.92));
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .landing-preview-card::before {
+                content: "";
+                position: absolute;
+                inset: auto -8% -36% 44%;
+                height: 110px;
+                border-radius: 999px;
+                background: radial-gradient(circle, rgba(255, 255, 255, 0.16), transparent 68%);
+                filter: blur(12px);
+                transform: rotate(-8deg);
+                pointer-events: none;
+            }
+
+            .landing-preview-card::after {
+                content: "";
+                position: absolute;
+                inset: auto -20% -42% auto;
+                width: 120px;
+                height: 120px;
+                border-radius: 999px;
+                background: radial-gradient(circle, rgba(255, 255, 255, 0.12), transparent 70%);
+                filter: blur(16px);
+                pointer-events: none;
+            }
+
+            .landing-preview-label {
+                color: var(--muted);
+                font-size: 0.72rem;
+                text-transform: uppercase;
+                letter-spacing: 0.16em;
+                margin-bottom: 0.45rem;
+            }
+
+            .landing-preview-number {
+                color: #ffffff;
+                font-size: 2rem;
+                font-weight: 800;
+                line-height: 1;
+                margin-bottom: 0.45rem;
+            }
+
+            .landing-preview-copy {
+                color: #d4d4d8;
+                font-size: 0.84rem;
+                line-height: 1.5;
+            }
+
+            .landing-section-gap {
+                margin-top: 1.25rem;
             }
 
             .answer-card {
@@ -388,8 +499,9 @@ def inject_css() -> None:
             .metric-card {
                 padding: 0.95rem 1rem;
                 border-radius: 20px;
-                background: linear-gradient(180deg, rgba(17, 26, 52, 0.84), rgba(10, 17, 35, 0.76));
-                border: 1px solid rgba(255, 255, 255, 0.08);
+                background: linear-gradient(180deg, rgba(34, 34, 37, 0.96), rgba(14, 14, 16, 0.9));
+                border: 1px solid rgba(255, 255, 255, 0.11);
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
             }
 
             .metric-label {
@@ -412,10 +524,10 @@ def inject_css() -> None:
 
             .interviewer-card {
                 margin-bottom: 0.9rem;
-                border: 1px solid rgba(120, 173, 255, 0.18);
+                border: 1px solid rgba(255, 255, 255, 0.12);
                 background:
-                    linear-gradient(135deg, rgba(76, 201, 240, 0.08), transparent 38%),
-                    linear-gradient(180deg, rgba(15, 22, 44, 0.86), rgba(10, 15, 31, 0.78));
+                    linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 42%),
+                    linear-gradient(180deg, rgba(28, 28, 31, 0.94), rgba(10, 10, 12, 0.9));
                 position: relative;
                 overflow: hidden;
             }
@@ -426,12 +538,12 @@ def inject_css() -> None:
                 inset: 0 auto 0 0;
                 width: 4px;
                 border-radius: 24px;
-                background: linear-gradient(180deg, rgba(76, 201, 240, 0.98), rgba(139, 92, 246, 0.98));
-                box-shadow: 0 0 18px rgba(97, 218, 251, 0.25);
+                background: linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(180, 180, 186, 0.9));
+                box-shadow: 0 0 18px rgba(255, 255, 255, 0.18);
             }
 
             .interviewer-copy {
-                color: #e4efff;
+                color: #f1f1f3;
                 font-size: 1rem;
                 line-height: 1.6;
                 margin: 0;
@@ -443,7 +555,7 @@ def inject_css() -> None:
                 align-items: center;
                 gap: 0.45rem;
                 margin-bottom: 0.7rem;
-                color: #dbe8ff;
+                color: #e7e7ea;
                 font-size: 0.82rem;
                 letter-spacing: 0.16em;
                 text-transform: uppercase;
@@ -453,8 +565,8 @@ def inject_css() -> None:
                 width: 10px;
                 height: 10px;
                 border-radius: 999px;
-                background: linear-gradient(135deg, rgba(76, 201, 240, 1), rgba(139, 92, 246, 1));
-                box-shadow: 0 0 14px rgba(97, 218, 251, 0.4);
+                background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(165, 165, 170, 0.92));
+                box-shadow: 0 0 14px rgba(255, 255, 255, 0.22);
             }
 
             .feedback-title {
@@ -466,7 +578,7 @@ def inject_css() -> None:
             .feedback-list {
                 margin: 0;
                 padding-left: 1.05rem;
-                color: #dce8ff;
+                color: #e2e2e7;
             }
 
             .feedback-list li {
@@ -483,16 +595,16 @@ def inject_css() -> None:
 
             .stTextArea textarea {
                 border-radius: 18px !important;
-                background: rgba(9, 16, 34, 0.9) !important;
-                border: 1px solid rgba(255, 255, 255, 0.12) !important;
-                color: #eff6ff !important;
+                background: rgba(16, 16, 18, 0.96) !important;
+                border: 1px solid rgba(255, 255, 255, 0.14) !important;
+                color: #f4f4f5 !important;
                 min-height: 220px !important;
-                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
             }
 
             .stTextArea textarea:focus {
-                border-color: rgba(97, 218, 251, 0.72) !important;
-                box-shadow: 0 0 0 1px rgba(97, 218, 251, 0.32) !important;
+                border-color: rgba(255, 255, 255, 0.4) !important;
+                box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16) !important;
             }
 
             .stTextArea label,
@@ -516,20 +628,20 @@ def inject_css() -> None:
             div[data-testid="stButton"] button,
             div[data-testid="stFormSubmitButton"] button {
                 border-radius: 16px !important;
-                border: 1px solid rgba(255, 255, 255, 0.12) !important;
-                color: white !important;
+                border: 1px solid rgba(255, 255, 255, 0.16) !important;
+                color: #111111 !important;
                 font-weight: 700 !important;
                 padding: 0.72rem 1rem !important;
-                background: linear-gradient(90deg, rgba(76, 201, 240, 0.96), rgba(139, 92, 246, 0.96)) !important;
-                box-shadow: 0 16px 32px rgba(11, 18, 40, 0.28);
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(218, 218, 223, 0.98)) !important;
+                box-shadow: 0 16px 32px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.6);
                 transition: transform 0.18s ease, filter 0.18s ease, box-shadow 0.18s ease;
             }
 
             div[data-testid="stButton"] button:hover,
             div[data-testid="stFormSubmitButton"] button:hover {
-                filter: brightness(1.08);
+                filter: brightness(1.03);
                 transform: translateY(-1px);
-                box-shadow: 0 0 0 1px rgba(102, 219, 255, 0.25), 0 16px 34px rgba(21, 32, 65, 0.42);
+                box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.24), 0 16px 34px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.75);
             }
 
             .summary-grid {
@@ -542,7 +654,7 @@ def inject_css() -> None:
             .summary-card {
                 padding: 0.95rem;
                 border-radius: 18px;
-                background: rgba(12, 21, 40, 0.74);
+                background: rgba(16, 16, 18, 0.82);
                 border: 1px solid rgba(255, 255, 255, 0.08);
             }
 
@@ -576,6 +688,7 @@ def inject_css() -> None:
 
             body[data-ai-viewport="mobile"] .landing-bullet-list,
             body[data-ai-viewport="mobile"] .landing-mini-grid,
+            body[data-ai-viewport="mobile"] .landing-preview-grid,
             body[data-ai-viewport="mobile"] .summary-grid {
                 grid-template-columns: 1fr !important;
             }
@@ -637,8 +750,8 @@ def inject_css() -> None:
 def init_session_state() -> None:
     defaults = {
         "mode": "technical",
-        "degree": "BE",
-        "current_semester": 4,
+        "degree": None,
+        "current_semester": None,
         "interview_started": False,
         "completed": False,
         "question_queue": [],
@@ -1101,12 +1214,92 @@ def render_landing_background(active: bool) -> None:
                         pointer-events: none;
                         z-index: -1;
                     }}
+                    #${{LANDING_ID}} {{
+                        overflow: hidden;
+                        background:
+                            radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.035), transparent 26%),
+                            radial-gradient(circle at 82% 14%, rgba(170, 170, 176, 0.03), transparent 24%),
+                            linear-gradient(145deg, #010101, #060608);
+                    }}
+                    #${{LANDING_ID}} .ai-metal-wave,
+                    #${{INTERVIEW_ID}} .ai-metal-wave {{
+                        position: absolute;
+                        left: 18%;
+                        right: 8%;
+                        height: 84px;
+                        border-radius: 999px;
+                        pointer-events: none;
+                        opacity: 0.14;
+                        filter: blur(0.8px);
+                        mix-blend-mode: screen;
+                        background:
+                            linear-gradient(180deg,
+                                transparent 0%,
+                                rgba(255,255,255,0.02) 20%,
+                                rgba(255,255,255,0.08) 36%,
+                                rgba(215,215,220,0.05) 50%,
+                                rgba(255,255,255,0.14) 58%,
+                                rgba(172,172,180,0.06) 68%,
+                                transparent 100%),
+                            linear-gradient(90deg,
+                                transparent 0%,
+                                rgba(255,255,255,0.01) 18%,
+                                rgba(255,255,255,0.10) 34%,
+                                rgba(150,150,160,0.04) 50%,
+                                rgba(255,255,255,0.12) 66%,
+                                transparent 100%);
+                        animation: aiMetalWaveFlow 22s ease-in-out infinite alternate;
+                    }}
+                    #${{LANDING_ID}} .ai-metal-wave::before,
+                    #${{INTERVIEW_ID}} .ai-metal-wave::before,
+                    #${{LANDING_ID}} .ai-metal-wave::after,
+                    #${{INTERVIEW_ID}} .ai-metal-wave::after {{
+                        content: "";
+                        position: absolute;
+                        left: 8%;
+                        right: 8%;
+                        border-radius: 999px;
+                        pointer-events: none;
+                    }}
+                    #${{LANDING_ID}} .ai-metal-wave::before,
+                    #${{INTERVIEW_ID}} .ai-metal-wave::before {{
+                        top: 42%;
+                        height: 1px;
+                        background: linear-gradient(90deg,
+                            transparent 0%,
+                            rgba(255,255,255,0.06) 22%,
+                            rgba(255,255,255,0.34) 46%,
+                            rgba(255,255,255,0.10) 64%,
+                            transparent 100%);
+                        box-shadow: 0 0 6px rgba(255,255,255,0.08);
+                    }}
+                    #${{LANDING_ID}} .ai-metal-wave::after,
+                    #${{INTERVIEW_ID}} .ai-metal-wave::after {{
+                        top: 54%;
+                        height: 1px;
+                        background: linear-gradient(90deg,
+                            transparent 0%,
+                            rgba(255,255,255,0.03) 24%,
+                            rgba(194,194,200,0.22) 48%,
+                            rgba(255,255,255,0.05) 66%,
+                            transparent 100%);
+                    }}
+                    #${{LANDING_ID}} .ai-metal-wave.wave-a,
+                    #${{INTERVIEW_ID}} .ai-metal-wave.wave-a {{
+                        top: 11%;
+                        transform: rotate(-5deg);
+                    }}
+                    #${{LANDING_ID}} .ai-metal-wave.wave-b,
+                    #${{INTERVIEW_ID}} .ai-metal-wave.wave-b {{
+                        display: none;
+                        animation-delay: 4s;
+                    }}
                     #${{INTERVIEW_ID}} {{
                         overflow: hidden;
                         background:
-                            radial-gradient(circle at 18% 24%, rgba(76, 201, 240, 0.14), transparent 30%),
-                            radial-gradient(circle at 82% 18%, rgba(139, 92, 246, 0.16), transparent 28%),
-                            linear-gradient(140deg, #040712, #0a1530);
+                            radial-gradient(circle at 18% 24%, rgba(255, 255, 255, 0.08), transparent 28%),
+                            radial-gradient(circle at 82% 18%, rgba(160, 160, 168, 0.06), transparent 26%),
+                            linear-gradient(140deg, #010101, #08080a);
                     }}
                     #${{INTERVIEW_ID}} .ai-gradient-orb {{
                         position: absolute;
@@ -1123,7 +1316,7 @@ def render_landing_background(active: bool) -> None:
                         min-height: 280px;
                         top: -8vh;
                         left: -6vw;
-                        background: rgba(76, 201, 240, 0.30);
+                        background: rgba(255, 255, 255, 0.18);
                     }}
                     #${{INTERVIEW_ID}} .ai-gradient-orb.orb-b {{
                         width: 36vw;
@@ -1132,7 +1325,7 @@ def render_landing_background(active: bool) -> None:
                         min-height: 300px;
                         right: -8vw;
                         top: 8vh;
-                        background: rgba(139, 92, 246, 0.26);
+                        background: rgba(166, 166, 172, 0.12);
                         animation-delay: 3s;
                     }}
                     #${{INTERVIEW_ID}} .ai-gradient-orb.orb-c {{
@@ -1142,13 +1335,18 @@ def render_landing_background(active: bool) -> None:
                         min-height: 240px;
                         left: 28vw;
                         bottom: -10vh;
-                        background: rgba(56, 189, 248, 0.18);
+                        background: rgba(220, 220, 224, 0.08);
                         animation-delay: 6s;
                     }}
                     @keyframes aiGradientFloat {{
                         0% {{ transform: translate3d(0, 0, 0) scale(1); }}
                         50% {{ transform: translate3d(2vw, -2vh, 0) scale(1.08); }}
                         100% {{ transform: translate3d(-1vw, 3vh, 0) scale(0.96); }}
+                    }}
+                    @keyframes aiMetalWaveFlow {{
+                        0% {{ transform: translate3d(-1vw, 0, 0) rotate(-5deg) scaleX(0.99); }}
+                        50% {{ transform: translate3d(1vw, -0.4vh, 0) rotate(-4deg) scaleX(1.01); }}
+                        100% {{ transform: translate3d(2vw, 0.4vh, 0) rotate(-3deg) scaleX(1.02); }}
                     }}
                 `;
                 parentDoc.head.appendChild(styleEl);
@@ -1182,12 +1380,18 @@ def render_landing_background(active: bool) -> None:
                 if (!wrapper) {{
                     wrapper = parentDoc.createElement("div");
                     wrapper.id = LANDING_ID;
+                    const waveA = parentDoc.createElement("div");
+                    waveA.className = "ai-metal-wave wave-a";
+                    const waveB = parentDoc.createElement("div");
+                    waveB.className = "ai-metal-wave wave-b";
                     const canvas = parentDoc.createElement("canvas");
                     canvas.id = "ai-landing-particles-canvas";
                     canvas.style.width = "100%";
                     canvas.style.height = "100%";
                     canvas.style.display = "block";
                     canvas.style.opacity = "0.88";
+                    wrapper.appendChild(waveA);
+                    wrapper.appendChild(waveB);
                     wrapper.appendChild(canvas);
                     parentDoc.body.prepend(wrapper);
                 }}
@@ -1199,7 +1403,7 @@ def render_landing_background(active: bool) -> None:
                 const canvas = parentDoc.getElementById("ai-landing-particles-canvas");
                 const ctx = canvas.getContext("2d");
                 const particles = [];
-                const total = 42;
+                const total = 72;
 
                 function resizeCanvas() {{
                     canvas.width = window.parent.innerWidth;
@@ -1212,10 +1416,10 @@ def render_landing_background(active: bool) -> None:
                         particles.push({{
                             x: Math.random() * canvas.width,
                             y: Math.random() * canvas.height,
-                            radius: Math.random() * 2.2 + 0.9,
-                            vx: (Math.random() - 0.5) * 0.16,
-                            vy: (Math.random() - 0.5) * 0.16,
-                            color: i % 2 === 0 ? "76, 201, 240" : "139, 92, 246",
+                            radius: Math.random() * 2 + 0.8,
+                            vx: (Math.random() - 0.5) * 0.13,
+                            vy: (Math.random() - 0.5) * 0.13,
+                            color: i % 2 === 0 ? "255, 255, 255" : "170, 170, 176",
                         }});
                     }}
                 }}
@@ -1238,9 +1442,9 @@ def render_landing_background(active: bool) -> None:
                         if (particle.y > canvas.height + 20) particle.y = -20;
 
                         ctx.beginPath();
-                        ctx.fillStyle = `rgba(${{particle.color}}, 0.34)`;
-                        ctx.shadowBlur = 14;
-                        ctx.shadowColor = `rgba(${{particle.color}}, 0.18)`;
+                        ctx.fillStyle = `rgba(${{particle.color}}, 0.38)`;
+                        ctx.shadowBlur = 10;
+                        ctx.shadowColor = `rgba(${{particle.color}}, 0.12)`;
                         ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
                         ctx.fill();
                     }}
@@ -1253,9 +1457,9 @@ def render_landing_background(active: bool) -> None:
                             const dx = a.x - b.x;
                             const dy = a.y - b.y;
                             const dist = Math.sqrt(dx * dx + dy * dy);
-                            if (dist < 150) {{
+                            if (dist < 190) {{
                                 ctx.beginPath();
-                                ctx.strokeStyle = `rgba(122, 164, 255, ${{0.08 - dist / 2200}})`;
+                                ctx.strokeStyle = `rgba(190, 190, 198, ${{0.12 - dist / 1800}})`;
                                 ctx.lineWidth = 1;
                                 ctx.moveTo(a.x, a.y);
                                 ctx.lineTo(b.x, b.y);
@@ -1281,6 +1485,8 @@ def render_landing_background(active: bool) -> None:
                     wrapper = parentDoc.createElement("div");
                     wrapper.id = INTERVIEW_ID;
                     wrapper.innerHTML = `
+                        <div class="ai-metal-wave wave-a"></div>
+                        <div class="ai-metal-wave wave-b"></div>
                         <div class="ai-gradient-orb orb-a"></div>
                         <div class="ai-gradient-orb orb-b"></div>
                         <div class="ai-gradient-orb orb-c"></div>
@@ -1342,19 +1548,29 @@ def render_landing() -> None:
         selected_degree = st.selectbox(
             "Degree",
             DEGREE_OPTIONS,
-            index=DEGREE_OPTIONS.index(st.session_state.degree),
+            index=DEGREE_OPTIONS.index(st.session_state.degree) if st.session_state.degree in DEGREE_OPTIONS else None,
+            placeholder="Select degree",
         )
     with profile_col_2:
         selected_semester = st.selectbox(
             "Current semester",
             SEMESTER_OPTIONS,
-            index=SEMESTER_OPTIONS.index(int(st.session_state.current_semester)),
+            index=SEMESTER_OPTIONS.index(int(st.session_state.current_semester))
+            if st.session_state.current_semester in SEMESTER_OPTIONS
+            else None,
+            placeholder="Choose your semester",
         )
 
-    st.markdown(
-        f"<p class='muted-note'>Semester: {selected_semester} (VTU). Questions are adapted to your level.</p>",
-        unsafe_allow_html=True,
-    )
+    if selected_semester is not None:
+        st.markdown(
+            f"<p class='muted-note'>Semester: {selected_semester} (VTU). Questions are adapted to your level.</p>",
+            unsafe_allow_html=True,
+        )
+    else:
+        st.markdown(
+            "<p class='muted-note'>Choose your semester to get questions adapted to your level.</p>",
+            unsafe_allow_html=True,
+        )
 
     selected_mode = st.selectbox(
         "Interview mode",
@@ -1362,9 +1578,33 @@ def render_landing() -> None:
         index=MODE_OPTIONS.index(st.session_state.mode),
         format_func=lambda mode: mode.upper(),
     )
-    if st.button("Start Interview", type="primary", use_container_width=True):
+    can_start = selected_degree is not None and selected_semester is not None
+    if st.button("Start Interview", type="primary", use_container_width=True, disabled=not can_start):
         start_interview(selected_mode, selected_degree, int(selected_semester))
         st.rerun()
+
+    st.markdown(
+        """
+        <div class="landing-preview-grid fade-in fade-delay-2">
+            <div class="landing-preview-card">
+                <div class="landing-preview-label">Interview Modes</div>
+                <div class="landing-preview-number">3</div>
+                <div class="landing-preview-copy">TECHNICAL, HR, and MIXED practice in one clean flow.</div>
+            </div>
+            <div class="landing-preview-card">
+                <div class="landing-preview-label">Timed Session</div>
+                <div class="landing-preview-number">60s</div>
+                <div class="landing-preview-copy">Every answer is timed to build confidence under pressure.</div>
+            </div>
+            <div class="landing-preview-card">
+                <div class="landing-preview-label">Feedback</div>
+                <div class="landing-preview-number">Live</div>
+                <div class="landing-preview-copy">Get strengths, gaps, and suggestions after each response.</div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     st.markdown(
         """
@@ -1399,7 +1639,7 @@ def render_landing() -> None:
     with left_col:
         st.markdown(
             """
-            <div class="glass-card landing-detail-card fade-in fade-delay-1" style="margin-top: 0.95rem;">
+            <div class="glass-card landing-detail-card landing-section-gap fade-in fade-delay-1">
                 <div class="section-title">How It Works</div>
                 <p class="landing-detail-title">A simple interview flow from start to finish.</p>
                 <ol class="landing-number-list">
@@ -1415,7 +1655,7 @@ def render_landing() -> None:
 
         st.markdown(
             """
-            <div class="glass-card landing-detail-card fade-in fade-delay-2" style="margin-top: 0.95rem;">
+            <div class="glass-card landing-detail-card landing-section-gap fade-in fade-delay-2">
                 <div class="section-title">Tips</div>
                 <p class="landing-detail-title">Small habits that improve interview performance.</p>
                 <ul class="landing-tip-list">
@@ -1432,7 +1672,7 @@ def render_landing() -> None:
     with right_col:
         st.markdown(
             """
-            <div class="glass-card landing-detail-card fade-in fade-delay-2" style="margin-top: 0.95rem;">
+            <div class="glass-card landing-detail-card landing-section-gap fade-in fade-delay-2">
                 <div class="section-title">Features</div>
                 <p class="landing-detail-title">Built for realistic VTU-level practice.</p>
                 <div class="landing-mini-grid">
@@ -1502,11 +1742,11 @@ def render_voice_button(question_id: str) -> None:
                 border:none;
                 border-radius:16px;
                 padding:0.72rem 1rem;
-                color:white;
+                color:#111111;
                 cursor:pointer;
                 font-weight:700;
-                background:linear-gradient(90deg, rgba(76, 201, 240, 0.96), rgba(139, 92, 246, 0.96));
-                box-shadow:0 16px 30px rgba(13, 18, 38, 0.28);
+                background:linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(218, 218, 223, 0.98));
+                box-shadow:0 16px 30px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255,255,255,0.72);
                 font-family:system-ui, sans-serif;
             ">
                 🎤 Start Speaking
@@ -1516,10 +1756,10 @@ def render_voice_button(question_id: str) -> None:
                 width:100%;
                 border-radius:16px;
                 padding:0.78rem 0.95rem;
-                color:#eef6ff;
+                color:#f4f4f5;
                 text-align:center;
-                background:rgba(12, 22, 44, 0.88);
-                border:1px solid rgba(255,255,255,0.08);
+                background:rgba(22, 22, 24, 0.94);
+                border:1px solid rgba(255,255,255,0.1);
                 font-family:system-ui, sans-serif;
                 font-weight:600;
             "></div>
@@ -1652,18 +1892,19 @@ def render_timer_widget(question_id: str, deadline_at: float) -> None:
         <div style="
             padding:1rem 1rem 0.95rem;
             border-radius:20px;
-            background:linear-gradient(180deg, rgba(17, 26, 52, 0.84), rgba(10, 17, 35, 0.76));
-            border:1px solid rgba(255,255,255,0.08);
+            background:linear-gradient(180deg, rgba(36, 36, 39, 0.96), rgba(12, 12, 14, 0.9));
+            border:1px solid rgba(255,255,255,0.11);
+            box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
             font-family:system-ui, sans-serif;
-            color:#f1f6ff;
+            color:#f5f5f5;
         ">
-            <div style="font-size:0.76rem; letter-spacing:0.12em; text-transform:uppercase; color:#9caccc;">
+            <div style="font-size:0.76rem; letter-spacing:0.12em; text-transform:uppercase; color:#a1a1aa;">
                 Timer
             </div>
             <div id="timer-value" style="font-size:2rem; font-weight:800; margin-top:0.35rem;">
                 {remaining}s
             </div>
-            <div id="timer-note" style="color:#b8c8e5; font-size:0.88rem; margin-top:0.25rem;">
+            <div id="timer-note" style="color:#c4c4cc; font-size:0.88rem; margin-top:0.25rem;">
                 60-second response window
             </div>
             <div style="margin-top:0.9rem; height:10px; width:100%; background:rgba(255,255,255,0.08); border-radius:999px; overflow:hidden;">
@@ -1671,8 +1912,8 @@ def render_timer_widget(question_id: str, deadline_at: float) -> None:
                     height:100%;
                     width:{(remaining / QUESTION_TIME_LIMIT) * 100:.2f}%;
                     border-radius:999px;
-                    background:linear-gradient(90deg, #4cc9f0, #8b5cf6);
-                    box-shadow:0 0 18px rgba(76, 201, 240, 0.42);
+                    background:linear-gradient(90deg, #ffffff, #c7c7ce);
+                    box-shadow:0 0 18px rgba(255, 255, 255, 0.18);
                 "></div>
             </div>
         </div>
