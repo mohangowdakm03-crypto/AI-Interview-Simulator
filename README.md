@@ -6,21 +6,21 @@ An AI-powered Interview Simulator designed for **VTU students**, providing a rea
 
 ## 🎯 Features
 
-- 🎓 Semester-based question customization (VTU syllabus aligned)
-- 💻 Technical, HR, and Mixed interview modes
-- 🔁 Dynamic follow-up questions (based on answer quality)
-- 🧠 NLP-based answer evaluation
-- 📊 Scoring with strengths, weaknesses, and suggestions
-- ⏱ Timer-based interview simulation
-- 🎤 Voice input (browser-based)
-- 📱 Responsive UI (mobile + desktop)
-- 🧾 Resume Assistant (optional feature)
-- 👤 Student login (Name, USN, Email)
-- 📈 Performance tracking and report generation
+-  Semester-based question customization (VTU syllabus aligned)
+-  Technical, HR, and Mixed interview modes
+-  Dynamic follow-up questions (based on answer quality)
+-  NLP-based answer evaluation
+-  Scoring with strengths, weaknesses, and suggestions
+-  Timer-based interview simulation
+-  Voice input (browser-based)
+-  Responsive UI (mobile + desktop)
+-  Resume Assistant (optional feature)
+-  Student login (Name, USN, Email)
+-  Performance tracking and report generation
 
 ---
 
-## 🧠 How It Works
+##  How It Works
 
 1. Enter your details (Name, USN, Email)
 2. Select:
@@ -32,9 +32,9 @@ An AI-powered Interview Simulator designed for **VTU students**, providing a rea
 
 ---
 
-## 🏗️ Tech Stack
+##  Tech Stack
 
-- Python 🐍
+- Python 
 - Streamlit (UI)
 - NLP-based evaluation logic
 - JavaScript (for voice input & animations)
