@@ -6,16 +6,20 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 
+import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
 
+from admin import render_admin_dashboard
 from evaluator import EvaluationResult, build_special_evaluation, evaluate_answer
+from login import validate_admin_login, validate_student_login
 from questions import (
     InterviewMode,
     Question,
     difficulty_targets_for_semester,
     get_questions_for_semester,
 )
+from storage import append_result, load_all_results, load_student_records
 
 QUESTION_TIME_LIMIT = 60
 MODE_OPTIONS: List[InterviewMode] = ["technical", "hr", "mixed"]
@@ -752,6 +756,13 @@ def init_session_state() -> None:
         "mode": "technical",
         "degree": None,
         "current_semester": None,
+        "logged_in": False,
+        "user_role": None,
+        "student_name": "",
+        "student_usn": "",
+        "student_email": "",
+        "student_history": pd.DataFrame(),
+        "results_saved": False,
         "interview_started": False,
         "completed": False,
         "question_queue": [],
@@ -809,6 +820,66 @@ def render_notification() -> None:
         st.info(message)
 
     st.session_state.notification = None
+
+
+def logout_user() -> None:
+    st.session_state.logged_in = False
+    st.session_state.user_role = None
+    st.session_state.student_name = ""
+    st.session_state.student_usn = ""
+    st.session_state.student_email = ""
+    st.session_state.student_history = pd.DataFrame()
+    st.session_state.interview_started = False
+    st.session_state.completed = False
+    st.session_state.answers = []
+    st.session_state.question_queue = []
+    st.session_state.current_queue_index = 0
+    st.session_state.total_questions_expected = 0
+    st.session_state.results_saved = False
+
+
+def render_user_bar() -> None:
+    if not st.session_state.logged_in:
+        return
+
+    left_col, right_col = st.columns([5, 1])
+    with left_col:
+        if st.session_state.user_role == "admin":
+            st.markdown("**Welcome Admin**")
+        else:
+            st.markdown(
+                f"**Welcome {st.session_state.student_name} ({st.session_state.student_usn})**"
+            )
+    with right_col:
+        if st.button("Logout", use_container_width=True):
+            logout_user()
+            st.rerun()
+
+
+def save_completed_interview_if_needed() -> None:
+    if not st.session_state.logged_in or st.session_state.user_role != "student":
+        return
+    if not st.session_state.completed or st.session_state.results_saved:
+        return
+    if not st.session_state.answers:
+        return
+
+    report = build_report(st.session_state.answers)
+    append_result(
+        {
+            "name": st.session_state.student_name,
+            "usn": st.session_state.student_usn,
+            "email": st.session_state.student_email,
+            "degree": st.session_state.degree or "",
+            "semester": st.session_state.current_semester or "",
+            "mode": st.session_state.mode.upper(),
+            "score": report["total_score"],
+            "total_possible": report["total_possible"],
+            "average_score": round(report["average_score"], 2),
+        }
+    )
+    st.session_state.student_history = load_student_records(st.session_state.student_usn)
+    st.session_state.results_saved = True
 
 
 def current_item() -> Optional[InterviewItem]:
@@ -973,6 +1044,7 @@ def start_interview(mode: InterviewMode, degree: str, current_semester: int) -> 
     st.session_state.notification = None
     st.session_state.total_questions_expected = len(question_queue)
     st.session_state.follow_up_count = 0
+    st.session_state.results_saved = False
     if mode == "technical":
         st.session_state.interviewer_message = "Let's begin with technical questions."
     elif mode == "hr":
@@ -1530,7 +1602,73 @@ def inject_responsive_controller() -> None:
     )
 
 
+def render_login_page() -> None:
+    st.markdown(
+        """
+        <div class="glass-card landing-start-card fade-in">
+            <div class="section-title">Login Page</div>
+            <p class="muted-note">Sign in as a student to start interview practice, or use the admin login to view records.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    student_tab, admin_tab = st.tabs(["Student Login", "Admin Login"])
+
+    with student_tab:
+        with st.form("student_login_form"):
+            name = st.text_input("Name")
+            usn = st.text_input("USN", placeholder="4pa23cs001")
+            email = st.text_input("College Email", placeholder="student@pace.edu.in")
+            submitted = st.form_submit_button("Login as Student", use_container_width=True)
+
+        if submitted:
+            is_valid, error_message, student_info = validate_student_login(
+                name=name,
+                usn=usn,
+                email=email,
+            )
+            if not is_valid:
+                st.error(error_message)
+            else:
+                st.session_state.logged_in = True
+                st.session_state.user_role = "student"
+                st.session_state.student_name = student_info["name"]
+                st.session_state.student_usn = student_info["usn"]
+                st.session_state.student_email = student_info["email"]
+                st.session_state.student_history = load_student_records(student_info["usn"])
+                set_notification("success", f"Welcome {student_info['name']} ({student_info['usn']}).")
+                st.rerun()
+
+    with admin_tab:
+        with st.form("admin_login_form"):
+            admin_email = st.text_input("Admin Email", placeholder="faculty@college.edu")
+            admin_password = st.text_input("Password", type="password")
+            admin_submitted = st.form_submit_button("Login as Admin", use_container_width=True)
+
+        if admin_submitted:
+            is_valid, error_message = validate_admin_login(
+                email=admin_email,
+                password=admin_password,
+            )
+            if not is_valid:
+                st.error(error_message)
+            else:
+                st.session_state.logged_in = True
+                st.session_state.user_role = "admin"
+                set_notification("success", "Admin login successful.")
+                st.rerun()
+
+
 def render_landing() -> None:
+    if isinstance(st.session_state.student_history, pd.DataFrame) and not st.session_state.student_history.empty:
+        attempts = len(st.session_state.student_history)
+        best_score = st.session_state.student_history["average_score"].fillna(0).max()
+        st.markdown(
+            f"<p class='muted-note' style='max-width:920px;margin:0 auto 0.8rem;'>Previous attempts loaded for {st.session_state.student_usn}. Attempts: {attempts} | Best average score: {best_score:.1f}/10</p>",
+            unsafe_allow_html=True,
+        )
+
     st.markdown(
         """
         <div class="glass-card landing-start-card fade-in fade-delay-3">
@@ -2219,13 +2357,23 @@ def main() -> None:
 
     render_landing_background(not st.session_state.interview_started)
     render_title()
+    render_user_bar()
     render_notification()
+
+    if not st.session_state.logged_in:
+        render_login_page()
+        return
+
+    if st.session_state.user_role == "admin":
+        render_admin_dashboard(load_all_results())
+        return
 
     if not st.session_state.interview_started:
         render_landing()
         return
 
     if st.session_state.completed or current_question() is None:
+        save_completed_interview_if_needed()
         render_feedback_card()
         render_final_screen()
         return
