@@ -11,6 +11,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 from admin import render_admin_dashboard
+from db import ensure_student, init_db, insert_score, load_student_records
 from evaluator import EvaluationResult, build_special_evaluation, evaluate_answer
 from login import validate_admin_login, validate_student_login
 from questions import (
@@ -19,7 +20,6 @@ from questions import (
     difficulty_targets_for_semester,
     get_questions_for_semester,
 )
-from storage import append_result, load_all_results, load_student_records
 
 QUESTION_TIME_LIMIT = 60
 MODE_OPTIONS: List[InterviewMode] = ["technical", "hr", "mixed"]
@@ -865,18 +865,10 @@ def save_completed_interview_if_needed() -> None:
         return
 
     report = build_report(st.session_state.answers)
-    append_result(
-        {
-            "name": st.session_state.student_name,
-            "usn": st.session_state.student_usn,
-            "email": st.session_state.student_email,
-            "degree": st.session_state.degree or "",
-            "semester": st.session_state.current_semester or "",
-            "mode": st.session_state.mode.upper(),
-            "score": report["total_score"],
-            "total_possible": report["total_possible"],
-            "average_score": round(report["average_score"], 2),
-        }
+    insert_score(
+        usn=st.session_state.student_usn,
+        score=int(report["total_score"]),
+        mode=st.session_state.mode.upper(),
     )
     st.session_state.student_history = load_student_records(st.session_state.student_usn)
     st.session_state.results_saved = True
@@ -1631,6 +1623,11 @@ def render_login_page() -> None:
             if not is_valid:
                 st.error(error_message)
             else:
+                ensure_student(
+                    name=student_info["name"],
+                    usn=student_info["usn"],
+                    email=student_info["email"],
+                )
                 st.session_state.logged_in = True
                 st.session_state.user_role = "student"
                 st.session_state.student_name = student_info["name"]
@@ -1662,10 +1659,13 @@ def render_login_page() -> None:
 
 def render_landing() -> None:
     if isinstance(st.session_state.student_history, pd.DataFrame) and not st.session_state.student_history.empty:
-        attempts = len(st.session_state.student_history)
-        best_score = st.session_state.student_history["average_score"].fillna(0).max()
+        attempt_rows = st.session_state.student_history[
+            st.session_state.student_history["score"].notna()
+        ].copy()
+        attempts = len(attempt_rows)
+        best_score = attempt_rows["score"].fillna(0).max() if attempts else 0
         st.markdown(
-            f"<p class='muted-note' style='max-width:920px;margin:0 auto 0.8rem;'>Previous attempts loaded for {st.session_state.student_usn}. Attempts: {attempts} | Best average score: {best_score:.1f}/10</p>",
+            f"<p class='muted-note' style='max-width:920px;margin:0 auto 0.8rem;'>Previous attempts loaded for {st.session_state.student_usn}. Attempts: {attempts} | Best score: {best_score:.0f}</p>",
             unsafe_allow_html=True,
         )
 
@@ -2351,6 +2351,7 @@ def main() -> None:
 
     inject_css()
     inject_responsive_controller()
+    init_db()
     init_session_state()
     reset_answer_input_if_needed()
     handle_timeout_if_needed()
@@ -2365,7 +2366,7 @@ def main() -> None:
         return
 
     if st.session_state.user_role == "admin":
-        render_admin_dashboard(load_all_results())
+        render_admin_dashboard()
         return
 
     if not st.session_state.interview_started:

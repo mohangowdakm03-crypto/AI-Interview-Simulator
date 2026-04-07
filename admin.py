@@ -1,54 +1,90 @@
 from __future__ import annotations
 
-import pandas as pd
 import streamlit as st
 
+from db import (
+    delete_student_by_usn,
+    fetch_joined_records,
+    fetch_leaderboard,
+    fetch_student_summary,
+    reset_database,
+)
 
-def render_admin_dashboard(records: pd.DataFrame) -> None:
+
+def render_admin_dashboard() -> None:
     st.markdown("## Admin Dashboard")
 
-    if records.empty:
+    summary = fetch_student_summary()
+    attempts = fetch_joined_records()
+
+    if summary.empty:
         st.info("No student records found yet.")
-        return
+    else:
+        filter_col_1, filter_col_2 = st.columns(2)
+        with filter_col_1:
+            usn_filter = st.text_input("Search by USN", placeholder="Enter USN")
+        with filter_col_2:
+            name_filter = st.text_input("Search by Name", placeholder="Enter student name")
 
-    filter_col_1, filter_col_2 = st.columns(2)
-    with filter_col_1:
-        usn_filter = st.text_input("Filter by USN", placeholder="Enter USN")
-    with filter_col_2:
-        mode_options = ["All"] + sorted(records["mode"].dropna().astype(str).str.upper().unique().tolist())
-        selected_mode = st.selectbox("Filter by Mode", mode_options)
+        filtered_summary = summary.copy()
+        filtered_attempts = attempts.copy()
 
-    filtered = records.copy()
-    filtered["mode"] = filtered["mode"].astype(str)
-    filtered["usn"] = filtered["usn"].astype(str)
+        if usn_filter.strip():
+            filtered_summary = filtered_summary[
+                filtered_summary["usn"].astype(str).str.contains(usn_filter.strip(), case=False, na=False)
+            ]
+            filtered_attempts = filtered_attempts[
+                filtered_attempts["usn"].astype(str).str.contains(usn_filter.strip(), case=False, na=False)
+            ]
 
-    if usn_filter.strip():
-        filtered = filtered[filtered["usn"].str.contains(usn_filter.strip(), case=False, na=False)]
-    if selected_mode != "All":
-        filtered = filtered[filtered["mode"].str.upper() == selected_mode]
+        if name_filter.strip():
+            filtered_summary = filtered_summary[
+                filtered_summary["name"].astype(str).str.contains(name_filter.strip(), case=False, na=False)
+            ]
+            filtered_attempts = filtered_attempts[
+                filtered_attempts["name"].astype(str).str.contains(name_filter.strip(), case=False, na=False)
+            ]
 
-    metric_col_1, metric_col_2 = st.columns(2)
-    with metric_col_1:
-        average_score = float(filtered["average_score"].fillna(0).mean()) if not filtered.empty else 0.0
-        st.metric("Average Score", f"{average_score:.1f}/10")
-    with metric_col_2:
-        st.metric("Total Attempts", int(len(filtered)))
+        metric_col_1, metric_col_2 = st.columns(2)
+        with metric_col_1:
+            avg_score = float(filtered_summary["average_score"].fillna(0).mean()) if not filtered_summary.empty else 0.0
+            st.metric("Average Score", f"{avg_score:.2f}")
+        with metric_col_2:
+            total_attempts = int(filtered_attempts["score"].notna().sum()) if not filtered_attempts.empty else 0
+            st.metric("Total Attempts", total_attempts)
 
-    st.markdown("### Student Records")
-    st.dataframe(
-        filtered.sort_values("date", ascending=False),
-        use_container_width=True,
-        hide_index=True,
-    )
+        st.markdown("### Student Summary")
+        st.dataframe(filtered_summary, use_container_width=True, hide_index=True)
 
-    leaderboard = (
-        records.assign(average_score=records["average_score"].fillna(0))
-        .groupby(["usn", "name"], as_index=False)["average_score"]
-        .max()
-        .sort_values("average_score", ascending=False)
-        .head(10)
-        .rename(columns={"average_score": "best_average_score"})
-    )
+        st.markdown("### Attempt Records")
+        st.dataframe(filtered_attempts, use_container_width=True, hide_index=True)
 
-    st.markdown("### Leaderboard")
-    st.dataframe(leaderboard, use_container_width=True, hide_index=True)
+        st.markdown("### Leaderboard")
+        st.dataframe(fetch_leaderboard(), use_container_width=True, hide_index=True)
+
+    st.markdown("### Delete Specific Student")
+    delete_usn = st.text_input("USN to delete", placeholder="Enter USN")
+    confirm_delete = st.checkbox("Are you sure? This cannot be undone", key="confirm_delete_student")
+    if st.button("Delete Student", use_container_width=True):
+        if not delete_usn.strip():
+            st.error("Please enter a USN.")
+        elif not confirm_delete:
+            st.warning("Please confirm before deleting a student.")
+        else:
+            deleted = delete_student_by_usn(delete_usn)
+            if deleted:
+                st.success(f"Deleted student data for {delete_usn.strip().lower()}.")
+                st.rerun()
+            else:
+                st.error("Student not found.")
+
+    st.markdown("### Reset Database")
+    st.warning("This will delete all student and score records.")
+    confirm_reset = st.checkbox("I understand that this will delete all data", key="confirm_reset_database")
+    if st.button("Reset Database", use_container_width=True):
+        if not confirm_reset:
+            st.warning("Please confirm before resetting the database.")
+        else:
+            reset_database()
+            st.success("All database records have been deleted.")
+            st.rerun()
