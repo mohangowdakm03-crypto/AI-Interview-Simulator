@@ -757,6 +757,7 @@ def init_session_state() -> None:
         "degree": None,
         "current_semester": None,
         "logged_in": False,
+        "is_admin": False,
         "user_role": None,
         "student_name": "",
         "student_usn": "",
@@ -824,6 +825,7 @@ def render_notification() -> None:
 
 def logout_user() -> None:
     st.session_state.logged_in = False
+    st.session_state.is_admin = False
     st.session_state.user_role = None
     st.session_state.student_name = ""
     st.session_state.student_usn = ""
@@ -1629,6 +1631,7 @@ def render_login_page() -> None:
                     email=student_info["email"],
                 )
                 st.session_state.logged_in = True
+                st.session_state.is_admin = False
                 st.session_state.user_role = "student"
                 st.session_state.student_name = student_info["name"]
                 st.session_state.student_usn = student_info["usn"]
@@ -1652,6 +1655,7 @@ def render_login_page() -> None:
                 st.error(error_message)
             else:
                 st.session_state.logged_in = True
+                st.session_state.is_admin = True
                 st.session_state.user_role = "admin"
                 set_notification("success", "Admin login successful.")
                 st.rerun()
@@ -2353,6 +2357,9 @@ def main() -> None:
     inject_responsive_controller()
     init_db()
     init_session_state()
+    if st.session_state.get("is_admin"):
+        st.session_state.logged_in = True
+        st.session_state.user_role = "admin"
     reset_answer_input_if_needed()
     handle_timeout_if_needed()
 

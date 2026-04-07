@@ -2,6 +2,11 @@ from __future__ import annotations
 
 import streamlit as st
 
+try:
+    from streamlit_autorefresh import st_autorefresh
+except ImportError:  # pragma: no cover - optional dependency fallback
+    st_autorefresh = None
+
 from db import (
     delete_student_by_usn,
     fetch_joined_records,
@@ -13,9 +18,22 @@ from db import (
 
 def render_admin_dashboard() -> None:
     st.markdown("## Admin Dashboard")
+    st.caption("Dashboard auto-refreshes every 5 seconds.")
+
+    if st_autorefresh is not None:
+        st_autorefresh(interval=5000, key="admin_refresh")
+
+    action_col_1, action_col_2 = st.columns([1, 2])
+    with action_col_1:
+        if st.button("Refresh Now", use_container_width=True):
+            st.rerun()
+    with action_col_2:
+        if st_autorefresh is None:
+            st.info("Install `streamlit-autorefresh` to enable automatic updates.")
 
     summary = fetch_student_summary()
     attempts = fetch_joined_records()
+    leaderboard = fetch_leaderboard()
 
     if summary.empty:
         st.info("No student records found yet.")
@@ -60,7 +78,7 @@ def render_admin_dashboard() -> None:
         st.dataframe(filtered_attempts, use_container_width=True, hide_index=True)
 
         st.markdown("### Leaderboard")
-        st.dataframe(fetch_leaderboard(), use_container_width=True, hide_index=True)
+        st.dataframe(leaderboard, use_container_width=True, hide_index=True)
 
     st.markdown("### Delete Specific Student")
     delete_usn = st.text_input("USN to delete", placeholder="Enter USN")

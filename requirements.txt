@@ -1,4 +1,5 @@
 streamlit
+streamlit-autorefresh
 scikit-learn
 numpy
 pandas
